@@ -11,8 +11,6 @@ $id = 1;
 
 
 
-
-
 $catalogue = new catalogue();
 
 $listeAlpha = $catalogue->listAll('id');
