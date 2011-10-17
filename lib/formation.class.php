@@ -41,6 +41,7 @@ class formation {
 		}
 			
 		if ($id != 0) {
+			$id = (int)$id;
 			$query = 'SELECT nom_formation FROM formations WHERE id_formation = '.$id;
 			$result = self::$db->query($query);
 			$ligne = $result->fetch(PDO::FETCH_ASSOC);	
@@ -58,14 +59,18 @@ class formation {
 	public function save($values) {
 		if ($this->id != 0) {
 			//update
-			$query = "UPDATE formations SET nom_formation = '".$values['nom']."' WHERE id_formation = ".$this->id;
-			self::$db->exec($query);
+			$query = "UPDATE formations SET nom_formation = :nom WHERE id_formation = ".$this->id;
+			$stmt = self::$db->prepare($query);
+			$stmt->bindParam(':nom', $values['nom']);
+			$stmt->execute();
 			$this->nom = $values['nom'];
 		}
 		else {
 			//create
-			$query = "INSERT INTO formations(nom_formation) VALUES ('".$values['nom']."')";
-			self::$db->exec($query);
+			$query = "INSERT INTO formations(nom_formation) VALUES (:nom)";
+			$stmt = self::$db->prepare($query);
+			$stmt->bindParam(':nom', $values['nom']);
+			$stmt->execute();
 			$newId = self::$db->lastInsertId();
 			$this->nom = $values['nom'];
 			$this->id = $newId;
@@ -81,9 +86,14 @@ class formation {
 	private function setCriteres($criteres) {
 		$query = 'DELETE FROM is_critere WHERE formation_id = '.$this->id;
 		self::$db->exec($query);
+		
+		$query = 'INSERT INTO is_critere(formation_id,critere_id) VALUES ('.$this->id.',:critere)';
+		$stmt = self::$db->prepare($query);
+		$newCritere = '';
+		$stmt->bindParam(':critere', $newCritere);
 		foreach ($criteres as $critere) {
-			$query = 'INSERT INTO is_critere(formation_id,critere_id) VALUES ('.$this->id.','.$critere.')';
-			self::$db->exec($query);
+			$newCritere = $critere;
+			$stmt->execute();		
 		}
 		$this->criteres = $criteres;
 	}
