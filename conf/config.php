@@ -15,5 +15,4 @@
     define('SQL_PASS','root');
     
 
-    
    ini_set('display_errors','on');
