@@ -1,10 +1,34 @@
 <?php
 
+/** 
+ * Fichier contenant la classe catalogue
+ * 
+ * 
+ * @package lib 
+ * @author Romain BOURDON <romain@ayeba.fr> 
+ */
+
+
+
+/** 
+ * La classe catalogue représente le catalogue de formations Ayeba
+ * Elle permet de manipuler les familles, critères et de lister des formations
+ * @package lib 
+ * @author Romain BOURDON <romain@ayeba.fr> 
+ */
+
+
 class catalogue {
 	
 	static $db = NULL;
 	static private $familles;
 	static private $famillesCriteres;
+	
+
+/**
+* constructeur
+*
+*/
 	
 	public function __construct() {
 		if (self::$db == NULL) {
@@ -12,6 +36,14 @@ class catalogue {
 			self::$db = $db;
 		}
 	}
+	
+
+/**
+* renvoie toutes les formations du catalogue triées
+*
+* @param string $order le tri à effectuer sur les formations
+* @return array un tableau 2D contenant les noms et le ids des formations
+*/	
 	
 	public function listAll ($order = 'alpha') {
 		switch ($order) {
@@ -28,6 +60,15 @@ class catalogue {
 		return $lignes;
 	}
 
+	
+/**
+* renvoie toutes les formations ayant un critère actif triées
+*
+* @param int $critere le critère pour lequel les formations doivent être activess
+* @param string $order le tri à effectuer sur les formations
+* @return array un tableau 2D contenant les noms et le ids des formations
+*/	
+	
 	public function listByCritere ($critere, $order = 'alpha') {
 		switch ($order) {
 			case 'id' :
@@ -45,10 +86,10 @@ class catalogue {
 	}
 	
 	
-	/**
-* m√©thode statique qui renvoie la liste des familles de crit√®res existant en base
+/**
+* méthode statique qui renvoie la liste des familles de critères existant en base
 *
-* @return array un tableau o√π chaque cellule 'id_famille' contient le nom de la famille
+* @return array un tableau où chaque cellule 'id_famille' contient le nom de la famille
 */	
 	
 	static public function getFamilles() {
@@ -62,6 +103,12 @@ class catalogue {
 	}
 
 	
+/**
+* méthode statique qui renvoie le nom d'un critère en fonction de son id
+*
+* @param int $id l'id à rechercher
+* @return array un tableau où chaque cellule 'id_famille' contient le nom de la famille
+*/	
 	
 	
 	static public function getCritereById ($id) {
@@ -76,12 +123,12 @@ class catalogue {
 	
 	
 /**
-* m√©thode statique qui renvoie la correspondance entre familles et crit√®res
+* méthode statique qui renvoie la correspondance entre familles et critères
 * sous la forme d'un tableau 3D
 * tab[id_famille][nom] = nom de la famille
 * tab[id_famille][criteres][id_critere] = nom du critere
 *
-* @return array un tableau √† 3 dimensions
+* @return array un tableau à 3 dimensions
 */		
 	
 	static public function getAllFamillesCriteres() {
