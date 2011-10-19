@@ -1,9 +1,16 @@
 <?php
 require 'conf/config.php';
 
+require 'lib/user.class.php';
 require 'lib/mypdo.php';
 require 'lib/catalogue.class.php';
 require 'inc/forms.inc.php';
+
+$user = new user();
+if (!$user->checkStatus()) {
+	header ('Location: login.php');
+	die();
+}
 
 
 $id = 0;

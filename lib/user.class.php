@@ -48,7 +48,8 @@ class user {
 			$db = new mypdo();
 			self::$db = $db;
 		}
-		session_start();
+		if (!isset($_SESSION))
+			session_start();
 		if (isset($_SESSION['user'])) {
 			$this->login = $_SESSION['user']->login;
 			$this->logged = $_SESSION['user']->logged;
