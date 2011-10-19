@@ -207,7 +207,7 @@ CREATE TABLE `users` (
 -- Contenu de la table `users`
 --
 
-INSERT INTO `users` VALUES('romain', 'thomas', 'romain@ayeba.fr');
+INSERT INTO `users` VALUES('romain', 'toto', 'romain@ayeba.fr');
 
 --
 -- Contraintes pour les tables exportées
