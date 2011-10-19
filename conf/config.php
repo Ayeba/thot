@@ -10,7 +10,7 @@
  
     
     define('SQL_SERVER','localhost');
-    define('SQL_DB','formation2');
+    define('SQL_DB','formation');
     define('SQL_USER','root');
     define('SQL_PASS','root');
     

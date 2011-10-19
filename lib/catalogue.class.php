@@ -79,7 +79,7 @@ class catalogue {
 				$orderBy = 'ORDER BY nom_formation';	
 		}
 		$critere = (int)$critere;
-		$query = "SELECT nom_formation, id_formation FROM formations, is_critere WHERE id_formation = formation_id AND critere_id = ".$critere." ".$orderBy;
+		$query = "SELECT nom_formation, id_formation FROM formations, has_critere WHERE id_formation = formation_id AND critere_id = ".$critere." ".$orderBy;
 		$result = self::$db->query($query);
 		$lignes = $result->fetchall();
 		return $lignes;

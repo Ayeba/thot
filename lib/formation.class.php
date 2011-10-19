@@ -84,10 +84,10 @@ class formation {
 * @param array $criteres la liste des id des critères à enregistrer
 */	
 	private function setCriteres($criteres) {
-		$query = 'DELETE FROM is_critere WHERE formation_id = '.$this->id;
+		$query = 'DELETE FROM has_critere WHERE formation_id = '.$this->id;
 		self::$db->exec($query);
 		
-		$query = 'INSERT INTO is_critere(formation_id,critere_id) VALUES ('.$this->id.',:critere)';
+		$query = 'INSERT INTO has_critere(formation_id,critere_id) VALUES ('.$this->id.',:critere)';
 		$stmt = self::$db->prepare($query);
 		$newCritere = '';
 		$stmt->bindParam(':critere', $newCritere);
@@ -107,7 +107,7 @@ class formation {
 	
 	public function getCriteres() {
 		if ($this->criteres == NULL) {
-			$query = "SELECT critere_id FROM is_critere WHERE formation_id = ".$this->id;
+			$query = "SELECT critere_id FROM has_critere WHERE formation_id = ".$this->id;
 			$result = self::$db->query($query);
 			while ($ligne = $result->fetch(PDO::FETCH_ASSOC))
 				$this->criteres[] = $ligne['critere_id'];
