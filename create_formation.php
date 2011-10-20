@@ -65,6 +65,10 @@ foreach ($famillesCriteres as $idFamille=>$familleCriteres) {
 
 <input type="submit" name="enregistrer" value="enregistrer"/>
 
+<?php
+if ($formation->id != 0)
+	echo '<a href="delete_formation.php?id='.$formation->id.'">supprimer</a>';
+?>
 
 </form>
 

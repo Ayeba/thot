@@ -12,8 +12,8 @@
 
 
 /** 
- * La classe formation repr√©sente les formations pr√©sentes dans le catalogue Ayeba
- * Elle permet de manipuler les formations et de leur associer des crit√®res de tri.
+ * La classe formation représente les formations présentes dans le catalogue Ayeba
+ * Elle permet de manipuler les formations et de leur associer des critères de tri.
  * @package lib 
  * @author Romain BOURDON <romain@ayeba.fr> 
  */
@@ -30,7 +30,7 @@ class formation {
 /**
 * constructeur
 *
-* @param int $id l'id de la formation √† charger, 0 si cr√©ation d'une nouvelle formation
+* @param int $id l'id de la formation à charger, 0 si création d'une nouvelle formation
 */
 	
 	public function __construct($id = 0) {		
@@ -51,9 +51,9 @@ class formation {
 	
 
 /**
-* enregistre/met √† jour la formation courante en base de donn√©es
+* enregistre / met à jour la formation courante en base de données
 *
-* @param array $values un tableau 2D contenant les informations √† enregistrer
+* @param array $values un tableau 2D contenant les informations à enregistrer
 */	
 	
 	public function save($values) {
@@ -79,9 +79,23 @@ class formation {
 	}
 	
 /**
-* met √† jour les crit√®res de tri de la formation
+* supprime la formation en db. Remet l'id de l'objet courant à 0
 *
-* @param array $criteres la liste des id des crit√®res √† enregistrer
+*/	
+	
+	public function delete() {
+		if ($this->id != 0) {
+			$query = "DELETE FROM formations WHERE id_formation = ".$this->id;
+			$stmt = self::$db->exec($query);
+		}
+		$this->id = 0;
+	}
+ 	
+	
+/**
+* met à jour les critères de tri de la formation
+*
+* @param array $criteres la liste des id des critères à enregistrer
 */	
 	private function setCriteres($criteres) {
 		$query = 'DELETE FROM has_critere WHERE formation_id = '.$this->id;
@@ -100,9 +114,9 @@ class formation {
 	
 
 /**
-* renvoie la liste des criteres associ√©s √† la formation
+* renvoie la liste des criteres associés à la formation
 *
-* @return array un tableau contenant les id des crit√®res associ√©s √† la formation
+* @return array un tableau contenant les id des critères associés à la formation
 */	
 	
 	public function getCriteres() {
