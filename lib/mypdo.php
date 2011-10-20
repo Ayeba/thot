@@ -34,9 +34,6 @@ class myPDO extends PDO {
 *
 */
 	public function __construct() {
-		//pseudo singleton
-		if (self::$db != false)
-			return self::$db; 
 		$this->sqlUser = SQL_USER;
 		$this->sqlPass = SQL_PASS;
 		$this->sqlServer = SQL_SERVER;
@@ -108,6 +105,12 @@ class myPDO extends PDO {
 			die();
 		}
 	}
+	
+	
+	public function __destruct() {
+		self::$db = NULL;
+	}
+	
 		
 }
 

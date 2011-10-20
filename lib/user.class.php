@@ -40,16 +40,14 @@ class user {
 * $logged ˆ 0 
 * 
 *
-* @param string $pathToTpl le nom (chemin inclus) du gabarit ˆ charger
 */	
 	
 	public function __construct($login='', $pass='') {		
-		if (self::$db == NULL) {
+//		if (self::$db == NULL) {
 			$db = new mypdo();
 			self::$db = $db;
-		}
-		if (!isset($_SESSION))
-			session_start();
+//		}
+		@session_start();
 		if (isset($_SESSION['user'])) {
 			$this->login = $_SESSION['user']->login;
 			$this->logged = $_SESSION['user']->logged;
@@ -62,6 +60,7 @@ class user {
 			$stmt->execute();
 			while($ligne = $stmt->fetch()) {
 				if (isset($ligne['login'])) {
+					$this->login = $ligne['login'];
 					$this->logged = 1;
 					$_SESSION['user'] = $this;
 				}

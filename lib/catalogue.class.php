@@ -37,7 +37,7 @@ class catalogue {
 		}
 	}
 	
-
+	
 /**
 * renvoie toutes les formations du catalogue triées
 *
