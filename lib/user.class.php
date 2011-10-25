@@ -53,7 +53,7 @@ class user {
 			$this->logged = $_SESSION['user']->logged;
 		}
 		if ($login != '' AND $pass != '') {
-			$query = "SELECT login FROM users WHERE login = :login AND password = :pass";
+			$query = "SELECT login FROM users WHERE login = :login AND password = MD5(:pass)";
 			$stmt = self::$db->prepare($query);
 			$stmt->bindParam(':login', $login);
 			$stmt->bindParam(':pass', $pass);
