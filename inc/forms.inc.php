@@ -37,7 +37,7 @@ function genCheckBox($aff,$value,$name,$checked=0) {
 		$checked = 'checked="checked"';
 	else
 		$checked = '';
-	return '<input type="checkbox" name="'.$name.'" value="'.$value.'" '.$checked.' /> '.$aff;
+	return '<div><input type="checkbox" name="'.$name.'" value="'.$value.'" '.$checked.' /> '.$aff.'</div>';
 }
 
 

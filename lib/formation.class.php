@@ -21,8 +21,20 @@
 
 class formation {
 	public $id;
-	public $nom;
+	public $nom = '';
 	private $criteres = NULL;
+	public $image = '';
+	public $sousTitre = '';
+	public $description = '';
+	public $objectifs = '';
+	public $preRequis = '';
+	public $code = '';
+	public $programme = '';
+	public $dureeJours = 0;
+	public $dureeHeures = 0;
+	public $plus = '';
+	public $tarifInter = 0;
+	public $tarifCp = 0;
 	
 	static $db;
 	
@@ -42,10 +54,22 @@ class formation {
 			
 		if ($id != 0) {
 			$id = (int)$id;
-			$query = 'SELECT nom_formation FROM formations WHERE id_formation = '.$id;
+			$query = 'SELECT nom_formation,soustitre,description,objectifs,prerequis,code,programme,dureejours,dureeheures,plus,tarifinter,tarifcp,image FROM formations WHERE id_formation = '.$id;
 			$result = self::$db->query($query);
 			$ligne = $result->fetch(PDO::FETCH_ASSOC);	
 			$this->nom = $ligne['nom_formation'];
+			$this->sousTitre = $ligne['soustitre'];
+			$this->description = $ligne['description'];
+			$this->objectifs = $ligne['objectifs'];
+			$this->preRequis = $ligne['prerequis'];
+			$this->code = $ligne['code'];
+			$this->programme = $ligne['programme'];
+			$this->dureeJours = $ligne['dureejours'];
+			$this->dureeHeures = $ligne['dureeheures'];
+			$this->plus = $ligne['plus'];
+			$this->tarifInter = $ligne['tarifinter'];
+			$this->tarifCp = $ligne['tarifcp'];
+			$this->image = $ligne['image'];
 		}
 	}
 	
@@ -59,22 +83,57 @@ class formation {
 	public function save($values) {
 		if ($this->id != 0) {
 			//update
-			$query = "UPDATE formations SET nom_formation = :nom WHERE id_formation = ".$this->id;
+			$query = "UPDATE formations SET nom_formation = :nom,soustitre = :soustitre, description = :description, objectifs = :objectifs, prerequis= :prerequis, code = :code, programme = :programme, dureejours = :dureejours, dureeheures = :dureeheures, plus = :plus, tarifinter = :tarifinter, tarifcp = :tarifcp, image = :image WHERE id_formation = ".$this->id;
 			$stmt = self::$db->prepare($query);
 			$stmt->bindParam(':nom', $values['nom']);
+			$stmt->bindParam(':soustitre', $values['sousTitre']);
+			$stmt->bindParam(':description', $values['description']);
+			$stmt->bindParam(':objectifs', $values['objectifs']);
+			$stmt->bindParam(':prerequis', $values['preRequis']);
+			$stmt->bindParam(':code', $values['code']);
+			$stmt->bindParam(':programme', $values['programme']);
+			$stmt->bindParam(':dureejours', $values['dureeJours']);
+			$stmt->bindParam(':dureeheures', $values['dureeHeures']);
+			$stmt->bindParam(':plus', $values['plus']);
+			$stmt->bindParam(':tarifinter', $values['tarifInter']);
+			$stmt->bindParam(':tarifcp', $values['tarifCp']);
+			$stmt->bindParam(':image', $values['image']);
 			$stmt->execute();
-			$this->nom = $values['nom'];
 		}
 		else {
 			//create
-			$query = "INSERT INTO formations(nom_formation) VALUES (:nom)";
+			$query = "INSERT INTO formations(nom_formation,soustitre,description,objectifs,prerequis,code,programme,dureejours,dureeheures,plus,tarifinter,tarifcp,image) VALUES (:nom,:soustitre,:description,:objectifs,:prerequis,:code,:programme,:dureejours,:dureeheures,:plus,:tarifinter,:tarifcp,:image)";
 			$stmt = self::$db->prepare($query);
 			$stmt->bindParam(':nom', $values['nom']);
+			$stmt->bindParam(':soustitre', $values['sousTitre']);
+			$stmt->bindParam(':description', $values['description']);
+			$stmt->bindParam(':objectifs', $values['objectifs']);
+			$stmt->bindParam(':prerequis', $values['preRequis']);
+			$stmt->bindParam(':code', $values['code']);
+			$stmt->bindParam(':programme', $values['programme']);
+			$stmt->bindParam(':dureejours', $values['dureeJours']);
+			$stmt->bindParam(':dureeheures', $values['dureeHeures']);
+			$stmt->bindParam(':plus', $values['plus']);
+			$stmt->bindParam(':tarifinter', $values['tarifInter']);
+			$stmt->bindParam(':tarifcp', $values['tarifCp']);
+			$stmt->bindParam(':image', $values['image']);
 			$stmt->execute();
 			$newId = self::$db->lastInsertId();
-			$this->nom = $values['nom'];
 			$this->id = $newId;
 		}
+		$this->nom = $values['nom'];
+		$this->sousTitre = $values['sousTitre'];
+		$this->description = $values['description'];
+		$this->objectifs = $values['objectifs'];
+		$this->preRequis = $values['preRequis'];
+		$this->code = $values['code'];
+		$this->programme = $values['programme'];
+		$this->dureeJours = $values['dureeJours'];
+		$this->dureeHeures = $values['dureeHeures'];
+		$this->plus = $values['plus'];
+		$this->tarifInter = $values['tarifInter'];
+		$this->tarifCp = $values['tarifCp'];
+		$this->image = $values['image'];
 		$this->setCriteres($values['criteres']);
 	}
 	
@@ -89,6 +148,19 @@ class formation {
 			$stmt = self::$db->exec($query);
 		}
 		$this->id = 0;
+		$this->nom = '';
+		$this->sousTitre = '';
+		$this->description = '';
+		$this->objectifs = '';
+		$this->preRequis = '';
+		$this->code = '';
+		$this->programme = '';
+		$this->dureeJours = 0;
+		$this->dureeHeures = 0;
+		$this->plus = '';
+		$this->tarifInter = 0;
+		$this->tarifCp = 0;
+		$this->image = '';
 	}
  	
 	

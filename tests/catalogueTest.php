@@ -61,4 +61,28 @@ class catalogueTest extends PHPUnit_Framework_TestCase
     }
     
     
+    public function testUpdateByCritere() {
+    	$tabBefore = $this->_catalogue->listByCritere(1);
+    	//on supprime la premiere formation selectionnŽe
+    	$tabModified = $tabBefore;
+    	unset($tabModified[0]);
+    	foreach ($tabModified as $cell) {
+    		$update[] = $cell['id_formation'];
+    	}
+    	$this->_catalogue->updateByCritere(1,$update);
+    	$tabAfter = $this->_catalogue->listByCritere(1);
+    	$this->assertNotEquals($tabBefore,$tabAfter);
+    	
+    	//on remet en l'Žtat initial la premiere formation selectionnŽe
+    	$update = NULL;
+    	foreach ($tabBefore as $cell) {
+    		$update[] = $cell['id_formation'];
+    	}
+    	$this->_catalogue->updateByCritere(1,$update);
+    	$tabAfter = $this->_catalogue->listByCritere(1);
+    	$this->assertEquals($tabBefore,$tabAfter);
+    }
+    
+    
+    
 }

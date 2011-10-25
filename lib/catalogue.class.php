@@ -84,6 +84,21 @@ class catalogue {
 		$lignes = $result->fetchall();
 		return $lignes;
 	}
+
+	
+	 public function updateByCritere ($critere, $update) {
+	 	$critere = (int)$critere;
+	 	$query = "DELETE FROM has_critere WHERE critere_id = ".$critere;
+	 	self::$db->query($query);
+	 	$query = "INSERT INTO has_critere(critere_id,formation_id) VALUES (".$critere.",:formation_id)";
+	 	$formation_id = 0;
+	 	$stmt = self::$db->prepare($query);
+		$stmt->bindParam(':formation_id', $formation_id);
+		foreach ($update as $formation_id) {
+			$stmt->execute();
+		}
+	 }
+	
 	
 	
 /**

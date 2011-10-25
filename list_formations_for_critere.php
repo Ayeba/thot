@@ -19,6 +19,15 @@ if (isset($_GET['id']))
 
 $catalogue = new catalogue();
 
+$message = '';
+if (isset($_POST['enregistrer'])) {
+	if (!isset($_POST['formations']))
+		$_POST['formations'] = array();
+	$catalogue->updateByCritere($id,$_POST['formations']);
+	$message = 'mise &agrave; jour effectu&eacute;';
+}
+
+
 $listeAlpha = $catalogue->listAll();
 
 $selected = $catalogue->listByCritere($id);
@@ -26,11 +35,15 @@ $selected = $catalogue->listByCritere($id);
 $nomCritere = catalogue::getCritereById($id);
 
 
+
+
+
 include 'menu.php';
 ?>
 
 <H1>formations pour le crit&egrave;re <?php echo $nomCritere; ?></H1>
-
+<?php echo $message; ?>
+<form method="post">
 <?php
 foreach($listeAlpha as $formation) {
 	if (in_array($formation,$selected))
@@ -42,4 +55,7 @@ foreach($listeAlpha as $formation) {
 	echo '</a>';
 	echo '<br/>';
 }
-
+?>
+<input type="submit" name="enregistrer" value="enregistrer"/>
+</form>
+</html>
