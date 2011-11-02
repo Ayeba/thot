@@ -27,7 +27,10 @@
 class user {
 	
 	public $login;
+	public $email;
 	private $logged = 0;
+	private $droits = 0;
+	public $roles = array();
 	
 	static $db;
 	
@@ -51,9 +54,12 @@ class user {
 		if (isset($_SESSION['user'])) {
 			$this->login = $_SESSION['user']->login;
 			$this->logged = $_SESSION['user']->logged;
+			$this->email = $_SESSION['user']->email;
+			$this->droits = $_SESSION['user']->droits;
+			$this->roles = $_SESSION['user']->roles;
 		}
 		if ($login != '' AND $pass != '') {
-			$query = "SELECT login FROM users WHERE login = :login AND password = MD5(:pass)";
+			$query = "SELECT login,droits,email FROM users WHERE login = :login AND password = MD5(:pass)";
 			$stmt = self::$db->prepare($query);
 			$stmt->bindParam(':login', $login);
 			$stmt->bindParam(':pass', $pass);
@@ -61,7 +67,10 @@ class user {
 			while($ligne = $stmt->fetch()) {
 				if (isset($ligne['login'])) {
 					$this->login = $ligne['login'];
+					$this->email = $ligne['email'];
+					$this->droits = $ligne['droits'];
 					$this->logged = 1;
+					$this->setRoles();
 					$_SESSION['user'] = $this;
 				}
 				else 
@@ -82,5 +91,93 @@ class user {
 		return $this->logged;
 	}
 	
+/**
+* permet de vŽrifier si le user courant a le r™le admin (1 dans le champ droits)
+*
+* @return int 1 si admin, 0 sinon
+* 
+*/	
+		
+	public function isAdmin() {
+		$valeur = $this->droits % 10;
+		$result = $valeur / 1;
+		if ($result >= 1)
+			return 1;
+		else
+			return 0;
+	}
+
+/**
+* permet de vŽrifier si le user courant a le r™le webmaster (10 dans le champ droits)
+*
+* @return int 1 si webmaster, 0 sinon
+* 
+*/	
+		
+	public function isWebmaster() {
+		$valeur = $this->droits % 100;
+		$result = $valeur / 10;
+		if ($result >= 1)
+			return 1;
+		else
+			return 0;
+	}
 	
+	
+/**
+* permet de vŽrifier si le user courant a le r™le commercial (100 dans le champ droits)
+*
+* @return int 1 si commercial, 0 sinon
+* 
+*/	
+		
+	public function isCommercial() {
+		$valeur = $this->droits % 1000;
+		$result = $valeur / 100;
+		if ($result >= 1)
+			return 1;
+		else
+			return 0;
+	}	
+	
+	
+/**
+* permet d'assigner une nouvelle valeur ˆ l'attribut droit
+* la valeur est temporaire ˆ la page et n'est pas enregistrŽe en base
+* le tableau $roles est Žgalement mis ˆ jour
+*
+* @param int $value la nouvelle valeur ˆ assigner
+* 
+*/	
+	
+	public function setDroits($value) {
+		$this->droits = (int)$value;
+		$this->setRoles();
+	}
+	
+
+/**
+* met ˆ jour les valeurs du tableau $role
+*
+* 
+*/	
+	
+	public function setRoles() {
+		$this->roles = NULL;
+		if ($this->isAdmin())
+			$this->roles['admin'] = 1;
+		else 
+			$this->roles['admin'] = 0;
+		if ($this->isWebmaster())
+			$this->roles['webmaster'] = 1;
+		else 
+			$this->roles['webmaster'] = 0;
+		if ($this->isCommercial())
+			$this->roles['commercial'] = 1;
+		else
+			$this->roles['commercial'] = 0;
+	}
+	
+	
+
 }

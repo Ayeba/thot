@@ -23,7 +23,7 @@ class catalogueTest extends PHPUnit_Framework_TestCase
     public function testListAllOrdreDefault() {
         $tab = $this->_catalogue->listAll();
         foreach ($tab as $cell) {
-        $tabNom[] = $cell['nom_formation'];	
+        $tabNom[] = strtolower($cell['nom_formation']);	
         } 
         $tab2Nom = $tabNom;
         sort($tab2Nom);
@@ -33,7 +33,7 @@ class catalogueTest extends PHPUnit_Framework_TestCase
     public function testListAllOrdreAlpha() {
         $tab = $this->_catalogue->listAll('alpha');
         foreach ($tab as $cell) {
-        $tabNom[] = $cell['nom_formation'];	
+        $tabNom[] = strtolower($cell['nom_formation']);	
         } 
         $tab2Nom = $tabNom;
         sort($tab2Nom);
@@ -53,7 +53,7 @@ class catalogueTest extends PHPUnit_Framework_TestCase
     public function testListAllOrdreWrongParam() {
         $tab = $this->_catalogue->listAll('toto');
         foreach ($tab as $cell) {
-        $tabNom[] = $cell['nom_formation'];	
+        $tabNom[] = strtolower($cell['nom_formation']);	
         } 
         $tab2Nom = $tabNom;
         sort($tab2Nom);

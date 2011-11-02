@@ -200,6 +200,50 @@ class formation {
 		}
 		return $this->criteres;
 	}
-			
+
+/**
+* renvoie un tableau 2D contenant la liste des dates ˆ venir et lieux de la formation
+*
+* @return array un tableau 2D contenant la liste des dates et lieux de la formation
+*/		
+
+	public function getDates() {
+		$query = "SELECT ville_id,nom_ville,date FROM dates,villes WHERE formation_id = ".$this->id." AND dates.ville_id = villes.id_ville AND date > NOW() ORDER BY nom_ville";
+		$result = self::$db->query($query);
+		return $result->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+	
+/**
+* ajoute une nouvelle date pour la formation dans la ville id
+*
+* @param int $ville l'id de la ville de la nouvelle date
+* @param string $date la date au format AAAA-MM-JJ
+*/		
+
+	public function addDate($ville,$date){
+		$query = "INSERT INTO dates(formation_id,ville_id,date) VALUES (".$this->id.",:ville,:date)";
+		$stmt = self::$db->prepare($query);
+		$stmt->bindParam(':ville', $ville);
+		$stmt->bindParam(':date', $date);
+		return ($stmt->execute());		
+	}
+
+/**
+* retire une date pour la formation dans la ville id
+*
+* @param int $ville l'id de la ville de la date
+* @param string $date la date au format AAAA-MM-JJ
+*/		
+
+	public function delDate($ville,$date){
+		$query = "DELETE FROM dates WHERE formation_id = ".$this->id." AND ville_id = :ville AND date = :date";
+		$stmt = self::$db->prepare($query);
+		$stmt->bindParam(':ville', $ville);
+		$stmt->bindParam(':date', $date);
+		return ($stmt->execute());		
+	}
+	
+	
 	
 }

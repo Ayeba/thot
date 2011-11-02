@@ -51,6 +51,19 @@ function genMultCheckBox($lignes,$name,$selected=NULL) {
 	}
 	return $formated;
 }
+
+function genSelect($list,$name,$selected=NULL) {
+	$formated = '<select name="'.$name.'">';
+	foreach ($list as $id=>$name) {
+		if ($id == $selected)
+			$affSelected = 'selected';
+		else 
+			$affSelected = '';
+		$formated .= '<option value="'.$id.'" '.$affSelected.'>'.$name.'</option>';
+	}
+	$formated .='</select>';
+	return $formated;
+}
 	
 
 

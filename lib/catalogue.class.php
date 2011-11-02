@@ -23,6 +23,7 @@ class catalogue {
 	static $db = NULL;
 	static private $familles;
 	static private $famillesCriteres;
+	static private $villes;
 	
 
 /**
@@ -157,4 +158,25 @@ class catalogue {
 		}
 		return self::$famillesCriteres;
 	}
+	
+	
+	/**
+* mŽthode statique qui renvoie la liste des villes existantes en base
+*
+* @return array un tableau o chaque cellule 'id_ville' contient le nom de la ville
+*/	
+	
+	static public function getVilles() {
+		if (self::$villes == NULL) {
+			$query = "SELECT id_ville,nom_ville FROM villes ORDER BY nom_ville";
+			$result = self::$db->query($query);
+			while ($ligne = $result->fetch(PDO::FETCH_ASSOC))
+				self::$villes[$ligne['id_ville']] = $ligne['nom_ville'];
+		}
+		return self::$villes;
+	}
+	
+	
+	
+	
 }
