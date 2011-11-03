@@ -122,12 +122,14 @@ foreach ($famillesCriteres as $idFamille=>$familleCriteres) {
 <input type="submit" name="enregistrer" value="enregistrer"/>
 
 <?php
-if ($formation->id != 0)
-	echo '<a href="delete_formation.php?id='.$formation->id.'">supprimer</a>';
+if ($formation->id != 0) {
+	echo '<script language="javascript">var id = '.$formation->id.';</script>';
+	echo '<a class="delText"  href="#">supprimer</a>';
+}
 ?>
 
 </form>
-
+<div id="dialog-confirm" title="Supprimer la formation?"></div>
 
 
 </html>

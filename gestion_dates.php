@@ -56,8 +56,8 @@ foreach ($dates as $date) {
 		echo '<br/>'.$date['nom_ville'].'<br/>';
 	}
 	$timeStamp = strtotime($date['date']);
-	echo strftime("%a %d/%m/%Y",$timeStamp).' <a href="gestion_dates.php?id='.$id.'&deldate=1&date='.strftime("%d/%m/%Y",$timeStamp).'&ville='.$date['ville_id'].'">X</a><br/>';
-	
+	//echo strftime("%a %d/%m/%Y",$timeStamp).' <a href="gestion_dates.php?id='.$id.'&deldate=1&date='.strftime("%d/%m/%Y",$timeStamp).'&ville='.$date['ville_id'].'">X</a><br/>';
+	echo strftime("%a %d/%m/%Y",$timeStamp).' <a href="#" class="delText" id="id='.$id.'&deldate=1&date='.strftime("%d/%m/%Y",$timeStamp).'&ville='.$date['ville_id'].'">X</a><br/>';
 }
 catalogue::$db = $db;
 $villes = catalogue::getVilles();
@@ -70,4 +70,5 @@ $villes = catalogue::getVilles();
 <?php echo genSelect($villes,'ville',1); ?>
 <input type="submit" name="enregistrer" value="enregistrer"/>
 </form>
+<div id="dialog-confirm" title="Supprimer la date?"></div>
 
