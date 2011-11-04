@@ -57,10 +57,34 @@ class catalogue {
 		}
 		$query = "SELECT nom_formation, id_formation FROM formations ".$orderBy;
 		$result = self::$db->query($query);
-		$lignes = $result->fetchall();
+		$lignes = $result->fetchall(PDO::FETCH_ASSOC);
 		return $lignes;
 	}
 
+	
+/**
+* renvoie toutes les formations du catalogue triŽes sauf celle prŽcisŽe
+*
+* @param int $id l'id de la formation ˆ ne pas renvoyer
+* @param string $order le tri ˆ effectuer sur les formations
+* @return array un tableau 2D contenant les noms et le ids des formations
+*/	
+	
+	public function listAllExcept ($id,$order = 'alpha') {
+		switch ($order) {
+			case 'id' :
+				$orderBy = ' ORDER BY id_formation';
+				break;
+			case 'aplha' :
+			default :
+				$orderBy = ' ORDER BY nom_formation';	
+		}
+		$query = "SELECT nom_formation, id_formation FROM formations WHERE id_formation != ".(int)$id.$orderBy;
+		$result = self::$db->query($query);
+		$lignes = $result->fetchall(PDO::FETCH_ASSOC);
+		return $lignes;
+	}
+	
 	
 /**
 * renvoie toutes les formations ayant un critre actif triŽes
@@ -82,7 +106,7 @@ class catalogue {
 		$critere = (int)$critere;
 		$query = "SELECT nom_formation, id_formation FROM formations, has_critere WHERE id_formation = formation_id AND critere_id = ".$critere." ".$orderBy;
 		$result = self::$db->query($query);
-		$lignes = $result->fetchall();
+		$lignes = $result->fetchall(PDO::FETCH_ASSOC);
 		return $lignes;
 	}
 

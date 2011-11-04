@@ -31,4 +31,86 @@ class formationTest extends PHPUnit_Framework_TestCase {
     	
     }
     
+    public function testGetRelations() {
+    	
+    }
+    
+    public function testAddRelation() {
+    	$this->_formation = new formation(1);
+    	$this->_formation->addRelation(2);
+    	$relations = $this->_formation->getRelations();
+    	$test = 0;
+    	foreach ($relations as $relation) {
+    		if ($relation['id_formation'] == 2)
+    			$test = 1;
+    	}
+    	$this->assertEquals ($test, 1);    	
+    }
+    
+    public function testDelRelation() {
+        $this->_formation = new formation(1);
+    	$this->_formation->delRelation(2);
+    	$relations = $this->_formation->getRelations();
+    	$test = 0;
+    	foreach ($relations as $relation) {
+    		if ($relation['id_formation'] == 2)
+    			$test = 1;
+    	}
+    	$this->assertEquals ($test, 0);    	
+    }
+    
+    public function testRelationEntreLaMemeFormation() {
+    	$this->_formation = new formation(1);
+    	$this->_formation->addRelation(1);
+    	$relations = $this->_formation->getRelations();
+    	$test = 0;
+    	foreach ($relations as $relation) {
+    		if ($relation['id_formation'] == 1)
+    			$test = 1;
+    	}
+       	$this->_formation->delRelation(1);
+    	$this->assertEquals ($test, 0);    	
+    }
+
+    public function testGetPlusLoin() {
+    		
+    }
+    
+    public function testAddPlusLoin() {
+    	$this->_formation = new formation(1);
+    	$this->_formation->addPlusLoin(2);
+    	$plusLoins = $this->_formation->getPlusLoins();
+    	$test = 0;
+    	foreach ($plusLoins as $plusLoin) {
+    		if ($plusLoin['id_formation'] == 2)
+    			$test = 1;
+    	}
+    	$this->assertEquals ($test, 1);    	
+    }
+    
+    public function testDelPlusLoin() {
+        $this->_formation = new formation(1);
+    	$this->_formation->delPlusLoin(2);
+    	$plusLoins = $this->_formation->getPlusLoins();
+    	$test = 0;
+    	foreach ($plusLoins as $plusLoin) {
+    		if ($plusLoin['id_formation'] == 2)
+    			$test = 1;
+    	}
+    	$this->assertEquals ($test, 0);    	
+    }
+    
+    public function testPlusLoinEntreLaMemeFormation() {
+    	$this->_formation = new formation(1);
+    	$this->_formation->addPlusLoin(1);
+    	$plusLoins = $this->_formation->getPlusLoins();
+    	$test = 0;
+    	foreach ($plusLoins as $plusLoin) {
+    		if ($plusLoin['id_formation'] == 1)
+    			$test = 1;
+    	}
+       	$this->_formation->delPlusLoin(1);
+    	$this->assertEquals ($test, 0);    	
+    }
+    
 }

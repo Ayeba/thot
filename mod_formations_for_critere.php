@@ -51,9 +51,7 @@ foreach($listeAlpha as $formation) {
 		$checked = 1;
 	else
 		$checked = 0;
-	echo '<a href="show_formation.php?id='.$formation['id_formation'].'">';
-	echo genCheckBox($formation['nom_formation'],$formation['id_formation'],'formations[]',$checked); 
-	echo '</a>';
+	echo genCheckBoxFormation($formation['nom_formation'],$formation['id_formation'],'formations[]',$checked); 
 	echo '<br/>';
 }
 ?>

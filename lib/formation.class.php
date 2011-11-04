@@ -245,5 +245,127 @@ class formation {
 	}
 	
 	
+/**
+* renvoie un tableau 2D contenant la liste des formations en relation
+*
+* @return array un tableau 2D contenant la liste des formations en relation
+*/		
+
+	public function getRelations() {
+		$query = "SELECT nom_formation, relation_formation_id as id_formation FROM en_relation,formations WHERE formation_id = ".$this->id." AND en_relation.relation_formation_id = formations.id_formation";
+		$result = self::$db->query($query);
+		return $result->fetchAll(PDO::FETCH_ASSOC);
+	}	
+
+	
+/**
+* ajoute une nouvelle relation pour la formation 
+*
+* @param int $formation_id l'id de la formation ˆ mettre en relation
+*/		
+
+	public function addRelation($formation_id){
+		if ($formation_id != $this->id) {
+			$query = "INSERT INTO en_relation(formation_id,relation_formation_id) VALUES (".$this->id.",:formation_id)";
+			$stmt = self::$db->prepare($query);
+			$stmt->bindParam(':formation_id', $formation_id);
+			return ($stmt->execute());		
+		}
+		return false;
+	}
+
+	
+/**
+* met ˆ jour les relations de la formation 
+*
+* @param int $relations un talbeau contenant les id des formations ˆ mettre en relation
+*/		
+
+	public function updateRelations($relations){
+		$query = "DELETE FROM en_relation WHERE formation_id = ".$this->id;
+		self::$db->exec($query);
+		foreach ($relations as $relation) {
+			$this->addRelation($relation);			
+		}
+	}
+	
+
+	
+	
+/**
+* retire une relation pour la formation
+*
+* @param int $formation_id l'id de la formation ˆ retirer de la relation
+*/		
+
+	public function delRelation($formation_id){
+		$query = "DELETE FROM en_relation WHERE formation_id = ".$this->id." AND relation_formation_id = :formation_id";
+		$stmt = self::$db->prepare($query);
+		$stmt->bindParam(':formation_id', $formation_id);
+		return ($stmt->execute());		
+	}
+	
+
+
+
+/**
+* renvoie un tableau 2D contenant la liste des formations "plus loin"
+*
+* @return array un tableau 2D contenant la liste des formations "plus loin"
+*/		
+
+	public function getPlusLoins() {
+		$query = "SELECT nom_formation, plusloin_formation_id as id_formation FROM plus_loin,formations WHERE formation_id = ".$this->id." AND plus_loin.plusloin_formation_id = formations.id_formation";
+		$result = self::$db->query($query);
+		return $result->fetchAll(PDO::FETCH_ASSOC);
+	}	
+
+	
+/**
+* ajoute un nouveau "plus loin" pour la formation 
+*
+* @param int $formation_id l'id de la formation ˆ mettre en "plus loin"
+*/		
+
+	public function addPlusLoin($formation_id){
+		if ($formation_id != $this->id) {
+			$query = "INSERT INTO plus_loin(formation_id,plusloin_formation_id) VALUES (".$this->id.",:formation_id)";
+			$stmt = self::$db->prepare($query);
+			$stmt->bindParam(':formation_id', $formation_id);
+			return ($stmt->execute());		
+		}
+		return false;
+	}
+
+	
+/**
+* met ˆ jour les "plus loin" de la formation 
+*
+* @param int $plusLoins un talbeau contenant les id des formations ˆ mettre en "plus loin"
+*/		
+
+	public function updatePlusLoins($plusLoins){
+		$query = "DELETE FROM plus_loin WHERE formation_id = ".$this->id;
+		self::$db->exec($query);
+		foreach ($plusLoins as $plusLoin) {
+			$this->addPlusLoin($plusLoin);			
+		}
+	}
+	
+
+		
+/**
+* retire un "plus loin" pour la formation
+*
+* @param int $formation_id l'id de la formation ˆ retirer de "plus loin"
+*/		
+
+	public function delPlusLoin($formation_id){
+		$query = "DELETE FROM plus_loin WHERE formation_id = ".$this->id." AND plusloin_formation_id = :formation_id";
+		$stmt = self::$db->prepare($query);
+		$stmt->bindParam(':formation_id', $formation_id);
+		return ($stmt->execute());		
+	}
 	
 }
+	

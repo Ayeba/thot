@@ -40,6 +40,14 @@ function genCheckBox($aff,$value,$name,$checked=0) {
 	return '<div><input type="checkbox" name="'.$name.'" value="'.$value.'" '.$checked.' /> '.$aff.'</div>';
 }
 
+function genCheckBoxFormation($aff,$value,$name,$checked=0) {
+	if ($checked == 1)
+		$checked = 'checked="checked"';
+	else
+		$checked = '';
+	return '<div><input type="checkbox" name="'.$name.'" value="'.$value.'" '.$checked.' /> <a href="show_formation.php?id='.$value.'">'.$aff.'</a></div>';
+}
+
 
 function genMultCheckBox($lignes,$name,$selected=NULL) {
 	$formated = '';
