@@ -45,13 +45,6 @@ include 'menu.php';
 
 <h1>Afficher une formation</h1>
 
-<?php 
-if ($formation->id != 0) {
-	echo '<a href="gestion_dates.php?id='.$formation->id.'">g&eacute;rer les dates</a>';
-}
-
-?>
-
 <div style="position:relative;top:20px;">nom : </div><div style="position:relative;left:120px;"><?php echo $formation->nom; ?></div>
 <div style="position:relative;top:20px;">code : </div><div style="position:relative;left:120px;"><?php echo $formation->code; ?></div>
 <div style="position:relative;top:20px;">sous-titre : </div><div style="position:relative;left:120px;width: 494px;"><?php echo $formation->sousTitre; ?></div>
@@ -70,6 +63,27 @@ if ($formation->id != 0) {
 <div class="preview" style="position:absolute;left:655px;top:115px;text-align: center;width: 200px;">
 		<img id="thumb"  src="media/formation_img/<?php echo $image; ?>" style="max-width: 200px;min-width: 100px;max-height: 175px;min-height: 100px;"/>	
 	</div>
+<div  style="position:absolute;left:655px;top:300px;width: 200px;">
+<?php 
+$dates = $formation->getDates();
+$ville_id = ''; 
+setlocale(LC_TIME, "fr_FR");
+foreach ($dates as $date) {
+	if ($ville_id != $date['ville_id']) {
+		$ville_id = $date['ville_id'];
+		echo '<br/>'.$date['nom_ville'].'<br/>';
+	}
+	$timeStamp = strtotime($date['date']);
+	echo strftime("%a %d/%m/%Y",$timeStamp).'<br/>';
+}
+
+if ($formation->id != 0) {
+	echo '<br /><a href="gestion_dates.php?id='.$formation->id.'">g&eacute;rer les dates</a>';
+}
+
+?>
+</div>	
+	
 
 <?php 
 foreach ($famillesCriteres as $idFamille=>$familleCriteres) {

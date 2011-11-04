@@ -71,4 +71,6 @@ $villes = catalogue::getVilles();
 <input type="submit" name="enregistrer" value="enregistrer"/>
 </form>
 <div id="dialog-confirm" title="Supprimer la date?"></div>
+<br />
+<a href="show_formation.php?id=<?php  echo $id;?>">retour</a>
 
