@@ -28,7 +28,7 @@ include 'menu.php';
 <br/>
 <?php 
 foreach ($listeAlpha as $formation) {
-	echo "<a href='create_formation.php?id=".$formation['id_formation']."'>".$formation['nom_formation'].'</a><br>';
+	echo "<a href='show_formation.php?id=".$formation['id_formation']."'>".$formation['nom_formation'].'</a><br>';
 }
 ?>
 

@@ -46,7 +46,8 @@ if (isset($_POST['enregistrer'])) {
 	}
 	}	
 	$formation->save($values);	
-	echo "modifi&eacute;";	
+	header ('Location: show_formation.php?id='.$formation->id);
+	die();	
 }
 
 catalogue::$db = $db;
@@ -92,7 +93,7 @@ if ($formation->id != 0) {
 <div style="position:relative;top:20px;">tarif CP : </div><div style="position:relative;left:120px;"><input type="text" name="tarifCp" size="10" maxlength="10" value="<?php echo $formation->tarifCp; ?>"/> Euros H.T</div>
 <input type="hidden" name="image" value="<?php echo $formation->image; ?>">
 
-<script type="text/javascript" src="js/formation.js"></script>
+<script type="text/javascript" src="js/create_formation.js"></script>
 <div class="preview" style="position:absolute;left:655px;top:115px;text-align: center;width: 200px;">
 		<img id="thumb"  src="media/formation_img/<?php echo $image; ?>" style="max-width: 200px;min-width: 100px;max-height: 175px;min-height: 100px;"/>	
 	<div id="deletePicture" style="font-size:10px<?php echo $displayDelImage; ?>"><a id='deletePicture' href="#">Supprimer</a></div>
@@ -121,15 +122,8 @@ foreach ($famillesCriteres as $idFamille=>$familleCriteres) {
 
 <input type="submit" name="enregistrer" value="enregistrer"/>
 
-<?php
-if ($formation->id != 0) {
-	echo '<script language="javascript">var id = '.$formation->id.';</script>';
-	echo '<a class="delText"  href="#">supprimer</a>';
-}
-?>
 
 </form>
-<div id="dialog-confirm" title="Supprimer la formation?"></div>
 
 
 </html>
