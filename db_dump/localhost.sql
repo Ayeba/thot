@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Serveur: localhost
--- Généré le : Mer 02 Novembre 2011 à 23:53
+-- Généré le : Lun 07 Novembre 2011 à 23:45
 -- Version du serveur: 5.5.9
 -- Version de PHP: 5.3.6
 
@@ -131,9 +131,29 @@ CREATE TABLE `dates` (
 
 INSERT INTO `dates` VALUES(1, 1, '2011-11-13');
 INSERT INTO `dates` VALUES(1, 1, '2011-11-23');
-INSERT INTO `dates` VALUES(1, 1, '2011-11-25');
+INSERT INTO `dates` VALUES(9, 1, '2011-11-21');
+INSERT INTO `dates` VALUES(11, 1, '2011-11-11');
 INSERT INTO `dates` VALUES(1, 2, '2011-11-16');
-INSERT INTO `dates` VALUES(1, 2, '2011-11-25');
+INSERT INTO `dates` VALUES(1, 2, '2011-12-12');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `en_relation`
+--
+
+CREATE TABLE `en_relation` (
+  `formation_id` int(11) NOT NULL,
+  `relation_formation_id` int(11) NOT NULL,
+  PRIMARY KEY (`formation_id`,`relation_formation_id`),
+  KEY `relation_formation_id` (`relation_formation_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Contenu de la table `en_relation`
+--
+
+INSERT INTO `en_relation` VALUES(9, 12);
 
 -- --------------------------------------------------------
 
@@ -178,21 +198,22 @@ CREATE TABLE `formations` (
   `tarifinter` int(11) NOT NULL,
   `tarifcp` int(11) NOT NULL,
   `image` varchar(100) NOT NULL,
+  `status` int(11) NOT NULL COMMENT 'brouillon : 0 / à valider : 1 / publiée : 2',
   PRIMARY KEY (`id_formation`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
 
 --
 -- Contenu de la table `formations`
 --
 
-INSERT INTO `formations` VALUES(1, 'toto', '', '', '', '', '', '', 0, 0, '', 0, 0, '');
-INSERT INTO `formations` VALUES(2, 'titi', '', '', '', '', '', '', 0, 0, '', 0, 0, '');
-INSERT INTO `formations` VALUES(6, 'XC303', '', '', '', '', '', '', 0, 0, '', 0, 0, '');
-INSERT INTO `formations` VALUES(8, 'a', '', '', '', '', '', '', 0, 0, '', 0, 0, 'photo1320250025.JPG');
-INSERT INTO `formations` VALUES(9, 'Devenir parfait', 'La meilleure formation de tous les temps', 'La meilleure formation de tous les temps vous permet de devenir le meilleur homme de tous les temps', 'devenir fort\r\ndevenir grand\r\navoir de grands bras\r\navoir de grandes jambes', 'avoir deux yeux\r\navoir deux oreilles', 'XC304', 'ici le programme de la formation. reste à définir un format pour l''affichage', 1, 14, 'Cette formation est animée par dieu', 300, 4000, '');
-INSERT INTO `formations` VALUES(10, 'rrr', '', '', '', '', '', '', 0, 0, '', 0, 0, '');
-INSERT INTO `formations` VALUES(11, 'blabla', '', '', '', '', '', '', 0, 0, '', 0, 0, '');
-INSERT INTO `formations` VALUES(12, 'boubou', '', '', '', '', '', '', 0, 0, '', 0, 0, '');
+INSERT INTO `formations` VALUES(1, 'toto', '', '', '', '', '', '', 0, 0, '', 0, 0, 'photo1320311136.JPG', 0);
+INSERT INTO `formations` VALUES(2, 'titi', '', '', '', '', '', '', 0, 0, '', 0, 0, '', 0);
+INSERT INTO `formations` VALUES(6, 'XC303', '', '', '', '', '', '', 0, 0, '', 0, 0, '', 0);
+INSERT INTO `formations` VALUES(9, 'Devenir parfait', 'La meilleure formation de tous les temps', 'La meilleure formation de tous les temps vous permet de devenir le meilleur homme de tous les temps', 'devenir fort\r\ndevenir grand\r\navoir de grands bras\r\navoir de grandes jambes', 'avoir deux yeux\r\navoir deux oreilles', 'XC304', 'ici le programme de la formation. reste à définir un format pour l''affichage', 1, 14, 'Cette formation est animée par dieu', 300, 4000, 'photo1320310036.JPG', 2);
+INSERT INTO `formations` VALUES(11, 'blabla', '', '', '', '', '', '', 0, 0, '', 0, 0, '', 0);
+INSERT INTO `formations` VALUES(12, 'boubou', '', '', '', '', '', '', 0, 0, '', 0, 0, '', 2);
+INSERT INTO `formations` VALUES(13, 'nouvelle formation', '', '', '', '', '', '', 0, 0, '', 0, 0, '', 1);
+INSERT INTO `formations` VALUES(14, 'encore', '', '', '', '', '', '', 0, 0, '', 0, 0, '', 2);
 
 -- --------------------------------------------------------
 
@@ -211,19 +232,21 @@ CREATE TABLE `has_critere` (
 -- Contenu de la table `has_critere`
 --
 
-INSERT INTO `has_critere` VALUES(1, 1);
-INSERT INTO `has_critere` VALUES(2, 1);
+INSERT INTO `has_critere` VALUES(12, 1);
 INSERT INTO `has_critere` VALUES(1, 2);
 INSERT INTO `has_critere` VALUES(2, 2);
 INSERT INTO `has_critere` VALUES(6, 2);
+INSERT INTO `has_critere` VALUES(12, 2);
 INSERT INTO `has_critere` VALUES(1, 3);
 INSERT INTO `has_critere` VALUES(2, 3);
 INSERT INTO `has_critere` VALUES(6, 3);
+INSERT INTO `has_critere` VALUES(9, 3);
 INSERT INTO `has_critere` VALUES(1, 4);
 INSERT INTO `has_critere` VALUES(2, 4);
 INSERT INTO `has_critere` VALUES(6, 4);
 INSERT INTO `has_critere` VALUES(9, 7);
-INSERT INTO `has_critere` VALUES(9, 10);
+INSERT INTO `has_critere` VALUES(13, 7);
+INSERT INTO `has_critere` VALUES(12, 10);
 INSERT INTO `has_critere` VALUES(9, 15);
 INSERT INTO `has_critere` VALUES(9, 22);
 INSERT INTO `has_critere` VALUES(9, 24);
@@ -269,6 +292,68 @@ CREATE TABLE `images` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `in_selection`
+--
+
+CREATE TABLE `in_selection` (
+  `selection_id` int(11) NOT NULL,
+  `formation_id` int(11) NOT NULL,
+  PRIMARY KEY (`selection_id`,`formation_id`),
+  KEY `formation_id` (`formation_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Contenu de la table `in_selection`
+--
+
+INSERT INTO `in_selection` VALUES(1, 12);
+INSERT INTO `in_selection` VALUES(1, 14);
+INSERT INTO `in_selection` VALUES(2, 14);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `plus_loin`
+--
+
+CREATE TABLE `plus_loin` (
+  `formation_id` int(11) NOT NULL,
+  `plusloin_formation_id` int(11) NOT NULL,
+  PRIMARY KEY (`formation_id`,`plusloin_formation_id`),
+  KEY `plusloin_formation_id` (`plusloin_formation_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Contenu de la table `plus_loin`
+--
+
+INSERT INTO `plus_loin` VALUES(9, 2);
+INSERT INTO `plus_loin` VALUES(9, 14);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `selections`
+--
+
+CREATE TABLE `selections` (
+  `id_selection` int(11) NOT NULL AUTO_INCREMENT,
+  `nom_selection` varchar(200) NOT NULL,
+  `commentaire` text NOT NULL,
+  `datemod` datetime NOT NULL,
+  PRIMARY KEY (`id_selection`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+
+--
+-- Contenu de la table `selections`
+--
+
+INSERT INTO `selections` VALUES(1, 'première selection', 'première selection qui sert aux tests', '2011-11-07 21:05:48');
+INSERT INTO `selections` VALUES(2, 'deuxième test', 'blabla', '2011-11-07 23:17:49');
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `users`
 --
 
@@ -297,7 +382,7 @@ CREATE TABLE `villes` (
   `nom_ville` varchar(100) NOT NULL,
   `commentaire` text NOT NULL,
   PRIMARY KEY (`id_ville`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Contenu de la table `villes`
@@ -305,6 +390,8 @@ CREATE TABLE `villes` (
 
 INSERT INTO `villes` VALUES(1, 'Bordeaux', '');
 INSERT INTO `villes` VALUES(2, 'Toulouse', '');
+INSERT INTO `villes` VALUES(3, 'blagnac', '');
+INSERT INTO `villes` VALUES(4, 'Paris', '');
 
 --
 -- Contraintes pour les tables exportées
@@ -321,8 +408,15 @@ ALTER TABLE `belongs_to`
 -- Contraintes pour la table `dates`
 --
 ALTER TABLE `dates`
-  ADD CONSTRAINT `dates_ibfk_2` FOREIGN KEY (`ville_id`) REFERENCES `villes` (`id_ville`) ON DELETE CASCADE,
-  ADD CONSTRAINT `dates_ibfk_1` FOREIGN KEY (`formation_id`) REFERENCES `formations` (`id_formation`) ON DELETE CASCADE;
+  ADD CONSTRAINT `dates_ibfk_1` FOREIGN KEY (`formation_id`) REFERENCES `formations` (`id_formation`) ON DELETE CASCADE,
+  ADD CONSTRAINT `dates_ibfk_2` FOREIGN KEY (`ville_id`) REFERENCES `villes` (`id_ville`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `en_relation`
+--
+ALTER TABLE `en_relation`
+  ADD CONSTRAINT `en_relation_ibfk_1` FOREIGN KEY (`formation_id`) REFERENCES `formations` (`id_formation`) ON DELETE CASCADE,
+  ADD CONSTRAINT `en_relation_ibfk_2` FOREIGN KEY (`relation_formation_id`) REFERENCES `formations` (`id_formation`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `has_critere`
@@ -337,3 +431,17 @@ ALTER TABLE `has_critere`
 ALTER TABLE `has_image`
   ADD CONSTRAINT `has_image_ibfk_1` FOREIGN KEY (`formation_id`) REFERENCES `formations` (`id_formation`) ON DELETE CASCADE,
   ADD CONSTRAINT `has_image_ibfk_2` FOREIGN KEY (`image_id`) REFERENCES `images` (`id_image`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `in_selection`
+--
+ALTER TABLE `in_selection`
+  ADD CONSTRAINT `in_selection_ibfk_2` FOREIGN KEY (`formation_id`) REFERENCES `formations` (`id_formation`) ON DELETE CASCADE,
+  ADD CONSTRAINT `in_selection_ibfk_1` FOREIGN KEY (`selection_id`) REFERENCES `selections` (`id_selection`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `plus_loin`
+--
+ALTER TABLE `plus_loin`
+  ADD CONSTRAINT `plus_loin_ibfk_1` FOREIGN KEY (`formation_id`) REFERENCES `formations` (`id_formation`) ON DELETE CASCADE,
+  ADD CONSTRAINT `plus_loin_ibfk_2` FOREIGN KEY (`plusloin_formation_id`) REFERENCES `formations` (`id_formation`) ON DELETE CASCADE;

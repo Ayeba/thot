@@ -43,6 +43,8 @@ include 'menu.php';
 
 
 <H1>liste des formations</H1>
+<a href="create_formation.php">Cr&eacute;er un nouvelle formation</a>
+<br /><br />
 <script type="text/javascript" src="js/list.js"></script>
 <?php 
 $list = $formationStatus;
