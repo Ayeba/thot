@@ -29,7 +29,8 @@ if (isset($_POST['enregistrer'])) {
 }
 
 
-$listeAlpha = $catalogue->listAll();
+//$listeAlpha = $catalogue->listAll();
+$listeAlpha = $catalogue->listByStatus(2);
 
 $selected = $catalogue->listByCritere($id);
 

@@ -37,7 +37,7 @@ if (isset($_POST['enregistrer']) && isset($_POST['plusloins'])) {
 $plusLoins = $formation->getPlusLoins();
 
 $catalogue = new catalogue();
-$listeAlpha = $catalogue->listAllExcept($id);
+$listeAlpha = $catalogue->listByStatusExcept(2,$id);
 
 
 include 'menu.php';

@@ -27,6 +27,13 @@ if ($id == 0) {
 $db = new mypdo();
 $formation = new formation($id);
 
+if (isset($_GET['pub']) AND $_GET['pub'] == 1) {
+	$formation->setStatus(2);
+	header('Location: show_formation.php?id='.$formation->id);
+	die();
+}
+
+
 catalogue::$db = $db;
 $famillesCriteres = catalogue::getAllFamillesCriteres();
 $selectedCriteres = $formation->getCriteres();
@@ -136,6 +143,17 @@ foreach ($famillesCriteres as $idFamille=>$familleCriteres) {
 }
 
 ?>
+<div style="position:relative;top:20px;width:100px">Status :</div>
+<div style="position:relative;left:120px;width:494px">
+<?php 
+echo $formationStatus[$formation->status];
+
+if ($formation->status == 1) {
+	echo '<br /> <a class="validate" href="#">valider la relecture</a>';
+}
+
+?>
+</div>
 <br/><br/>
 <a href="create_formation.php?id=<?php echo $formation->id; ?>">modifier</a> 
 &nbsp;&nbsp;
@@ -146,8 +164,8 @@ if ($formation->id != 0) {
 }
 ?>
 
-<div id="dialog-confirm" title="Supprimer la formation?"></div>
-
+<div id="dialog-delete" title="Supprimer la formation?"></div>
+<div id="dialog-validate" title="valider la formation?"></div>
 
 </html>
 

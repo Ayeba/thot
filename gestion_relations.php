@@ -37,8 +37,8 @@ if (isset($_POST['enregistrer']) && isset($_POST['relations'])) {
 $relations = $formation->getRelations();
 
 $catalogue = new catalogue();
-$listeAlpha = $catalogue->listAllExcept($id);
-
+//$listeAlpha = $catalogue->listAllExcept($id);
+$listeAlpha = $catalogue->listByStatusExcept(2,$id);
 
 include 'menu.php';
 ?>

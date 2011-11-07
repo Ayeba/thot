@@ -37,6 +37,7 @@ if (isset($_POST['enregistrer'])) {
 	$values['tarifInter'] = $_POST['tarifInter'];
 	$values['tarifCp'] = $_POST['tarifCp'];
 	$values['image'] = $_POST['image'];
+	$values['status'] = $_POST['status'];
 	$values['criteres'] = array();
 	if (isset($_POST['criteres'])) {
 	foreach ($_POST['criteres'] as $famille){
@@ -118,7 +119,19 @@ foreach ($famillesCriteres as $idFamille=>$familleCriteres) {
 }
 
 ?>
+<div style="position:relative;top:20px;">status : </div>
+<div style="position:relative;left:120px;">
+<?php 
 
+if ($formation->status == 2) {
+	$formation->status = 1;
+}
+$list = array(0=>$formationStatus[0],1=>$formationStatus[1]);
+
+echo genSelect($list,'status',$formation->status);
+
+?>
+</div>
 
 <input type="submit" name="enregistrer" value="enregistrer"/>
 

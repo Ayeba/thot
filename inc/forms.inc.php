@@ -72,6 +72,19 @@ function genSelect($list,$name,$selected=NULL) {
 	$formated .='</select>';
 	return $formated;
 }
-	
+
+function genSelectStatus($list,$selected = NULL) {
+	$formated = '<select name="status">';
+	$formated .= '<option value="-1">toutes</option>';
+	foreach ($formationStatus as $id=>$name) {
+		if ($id == $selected)
+			$affSelected = 'selected';
+		else 
+			$affSelected = '';
+		$formated .= '<option value="'.$id.'" '.$affSelected.'>'.$name.'</option>';
+	}
+	$formated .='</select>';
+	return $formated;
+}
 
 

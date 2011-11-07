@@ -35,6 +35,7 @@ class formation {
 	public $plus = '';
 	public $tarifInter = 0;
 	public $tarifCp = 0;
+	public $status = 0;
 	
 	static $db;
 	
@@ -54,7 +55,7 @@ class formation {
 			
 		if ($id != 0) {
 			$id = (int)$id;
-			$query = 'SELECT nom_formation,soustitre,description,objectifs,prerequis,code,programme,dureejours,dureeheures,plus,tarifinter,tarifcp,image FROM formations WHERE id_formation = '.$id;
+			$query = 'SELECT nom_formation,soustitre,description,objectifs,prerequis,code,programme,dureejours,dureeheures,plus,tarifinter,tarifcp,image, status FROM formations WHERE id_formation = '.$id;
 			$result = self::$db->query($query);
 			$ligne = $result->fetch(PDO::FETCH_ASSOC);	
 			$this->nom = $ligne['nom_formation'];
@@ -70,6 +71,7 @@ class formation {
 			$this->tarifInter = $ligne['tarifinter'];
 			$this->tarifCp = $ligne['tarifcp'];
 			$this->image = $ligne['image'];
+			$this->status = $ligne['status'];
 		}
 	}
 	
@@ -83,7 +85,7 @@ class formation {
 	public function save($values) {
 		if ($this->id != 0) {
 			//update
-			$query = "UPDATE formations SET nom_formation = :nom,soustitre = :soustitre, description = :description, objectifs = :objectifs, prerequis= :prerequis, code = :code, programme = :programme, dureejours = :dureejours, dureeheures = :dureeheures, plus = :plus, tarifinter = :tarifinter, tarifcp = :tarifcp, image = :image WHERE id_formation = ".$this->id;
+			$query = "UPDATE formations SET nom_formation = :nom,soustitre = :soustitre, description = :description, objectifs = :objectifs, prerequis= :prerequis, code = :code, programme = :programme, dureejours = :dureejours, dureeheures = :dureeheures, plus = :plus, tarifinter = :tarifinter, tarifcp = :tarifcp, image = :image, status = :status WHERE id_formation = ".$this->id;
 			$stmt = self::$db->prepare($query);
 			$stmt->bindParam(':nom', $values['nom']);
 			$stmt->bindParam(':soustitre', $values['sousTitre']);
@@ -98,11 +100,12 @@ class formation {
 			$stmt->bindParam(':tarifinter', $values['tarifInter']);
 			$stmt->bindParam(':tarifcp', $values['tarifCp']);
 			$stmt->bindParam(':image', $values['image']);
+			$stmt->bindParam(':status', $values['status']);
 			$stmt->execute();
 		}
 		else {
 			//create
-			$query = "INSERT INTO formations(nom_formation,soustitre,description,objectifs,prerequis,code,programme,dureejours,dureeheures,plus,tarifinter,tarifcp,image) VALUES (:nom,:soustitre,:description,:objectifs,:prerequis,:code,:programme,:dureejours,:dureeheures,:plus,:tarifinter,:tarifcp,:image)";
+			$query = "INSERT INTO formations(nom_formation,soustitre,description,objectifs,prerequis,code,programme,dureejours,dureeheures,plus,tarifinter,tarifcp,image,status) VALUES (:nom,:soustitre,:description,:objectifs,:prerequis,:code,:programme,:dureejours,:dureeheures,:plus,:tarifinter,:tarifcp,:image,:status)";
 			$stmt = self::$db->prepare($query);
 			$stmt->bindParam(':nom', $values['nom']);
 			$stmt->bindParam(':soustitre', $values['sousTitre']);
@@ -117,6 +120,7 @@ class formation {
 			$stmt->bindParam(':tarifinter', $values['tarifInter']);
 			$stmt->bindParam(':tarifcp', $values['tarifCp']);
 			$stmt->bindParam(':image', $values['image']);
+			$stmt->bindParam(':status', $values['status']);
 			$stmt->execute();
 			$newId = self::$db->lastInsertId();
 			$this->id = $newId;
@@ -134,7 +138,9 @@ class formation {
 		$this->tarifInter = $values['tarifInter'];
 		$this->tarifCp = $values['tarifCp'];
 		$this->image = $values['image'];
+		$this->status = $values['status'];
 		$this->setCriteres($values['criteres']);
+		
 	}
 	
 /**
@@ -161,6 +167,7 @@ class formation {
 		$this->tarifInter = 0;
 		$this->tarifCp = 0;
 		$this->image = '';
+		$this->status = 0;
 	}
  	
 	
@@ -252,7 +259,7 @@ class formation {
 */		
 
 	public function getRelations() {
-		$query = "SELECT nom_formation, relation_formation_id as id_formation FROM en_relation,formations WHERE formation_id = ".$this->id." AND en_relation.relation_formation_id = formations.id_formation";
+		$query = "SELECT nom_formation, relation_formation_id as id_formation FROM en_relation,formations WHERE formation_id = ".$this->id." AND status = 2 AND en_relation.relation_formation_id = formations.id_formation";
 		$result = self::$db->query($query);
 		return $result->fetchAll(PDO::FETCH_ASSOC);
 	}	
@@ -315,7 +322,7 @@ class formation {
 */		
 
 	public function getPlusLoins() {
-		$query = "SELECT nom_formation, plusloin_formation_id as id_formation FROM plus_loin,formations WHERE formation_id = ".$this->id." AND plus_loin.plusloin_formation_id = formations.id_formation";
+		$query = "SELECT nom_formation, plusloin_formation_id as id_formation FROM plus_loin,formations WHERE formation_id = ".$this->id." AND status = 2 AND plus_loin.plusloin_formation_id = formations.id_formation";
 		$result = self::$db->query($query);
 		return $result->fetchAll(PDO::FETCH_ASSOC);
 	}	
@@ -365,6 +372,23 @@ class formation {
 		$stmt = self::$db->prepare($query);
 		$stmt->bindParam(':formation_id', $formation_id);
 		return ($stmt->execute());		
+	}
+	
+
+/**
+* seter de l'attribut status 
+*
+* @param int $status la nouvelle valeur ˆ attribuer
+*/		
+
+	public function setStatus($status){
+		if ($status == 0 OR $status == 1 OR $status == 2) {
+			$query = "UPDATE formations SET status = ".(int)$status." WHERE id_formation = ".$this->id;
+			self::$db->exec($query);
+			$this->status = (int)$status;
+			return true;
+		}		
+		return false;
 	}
 	
 }

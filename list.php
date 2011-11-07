@@ -16,13 +16,45 @@ if (!$user->checkStatus()) {
 
 $catalogue = new catalogue();
 
-$listeAlpha = $catalogue->listAll();
+if (isset($_SESSION['status'])) {
+	$StatusOrder = $_SESSION['status'];
+}
 
+
+if (isset($_GET['status'])) {
+	if ($_GET['status'] >= 0) {
+		$StatusOrder = 	$_GET['status'];
+	}
+	else {
+		unset($StatusOrder);
+		unset ($_SESSION['status']);
+	}
+}
+
+if (isset($StatusOrder)) {
+	$listeAlpha = $catalogue->listByStatus($StatusOrder);
+	$_SESSION['status'] = $StatusOrder;
+}
+else {
+	$listeAlpha = $catalogue->listAll();
+}
 include 'menu.php';
 ?>
 
 
 <H1>liste des formations</H1>
+<script type="text/javascript" src="js/list.js"></script>
+<?php 
+$list = $formationStatus;
+$list[-1] = 'toutes';
+if (isset($StatusOrder)) {
+	$selected = (int)$StatusOrder;
+}
+else {
+	$selected = -1;
+}
+echo genSelect($list,'status',$selected);
+?>
 
 
 <br/>

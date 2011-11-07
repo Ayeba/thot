@@ -40,6 +40,12 @@ if (isset($_GET['deldate']) AND isset($_GET['date']) AND isset($_GET['ville']) A
 }
 
 
+if (isset($_POST['ajouter']) AND $_POST['ville'] != '') {
+	catalogue::$db = $db;
+	catalogue::addVille($_POST['ville']);	
+}
+
+
 $dates = $formation->getDates();
 
 include 'menu.php';
@@ -71,6 +77,14 @@ $villes = catalogue::getVilles();
 <input type="submit" name="enregistrer" value="enregistrer"/>
 </form>
 <div id="dialog-confirm" title="Supprimer la date?"></div>
+<br />
+<br />
+Ajouter une ville :
+<form method=post>
+<input type="text" name="ville">
+<input type="submit" name="ajouter" value="ajouter">
+</form>
+<br/>
 <br />
 <a href="show_formation.php?id=<?php  echo $id;?>">retour</a>
 

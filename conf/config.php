@@ -16,3 +16,9 @@
     
 
    ini_set('display_errors','on');
+   
+   
+   $formationStatus[0] = 'brouillon';
+   $formationStatus[1] = 'en attente de validation';
+   $formationStatus[2] = 'publi&eacute;e';
+   

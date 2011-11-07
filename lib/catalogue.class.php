@@ -87,6 +87,54 @@ class catalogue {
 	
 	
 /**
+* renvoie toutes les formations du catalogue triŽes et ayant le status spŽcifiŽ 
+*
+* @param int $status le status que les formations doivent avoir
+* @param string $order le tri ˆ effectuer sur les formations
+* @return array un tableau 2D contenant les noms et le ids des formations
+*/	
+	
+	public function listByStatus ($status, $order = 'alpha') {
+		switch ($order) {
+			case 'id' :
+				$orderBy = 'ORDER BY id_formation';
+				break;
+			case 'aplha' :
+			default :
+				$orderBy = 'ORDER BY nom_formation';	
+		}
+		$query = "SELECT nom_formation, id_formation FROM formations WHERE status = ".(int)$status.' '.$orderBy;
+		$result = self::$db->query($query);
+		$lignes = $result->fetchall(PDO::FETCH_ASSOC);
+		return $lignes;
+	}
+	
+	
+/**
+* renvoie toutes les formations du catalogue triŽes et ayant le status spŽcifiŽ sauf celle prŽcisŽe
+*
+* @param int $status le status que les formations doivent avoir
+* @param int $id l'id de la formation ˆ ne pas renvoyer
+* @param string $order le tri ˆ effectuer sur les formations
+* @return array un tableau 2D contenant les noms et le ids des formations
+*/	
+	
+	public function listByStatusExcept ($status, $id,$order = 'alpha') {
+		switch ($order) {
+			case 'id' :
+				$orderBy = ' ORDER BY id_formation';
+				break;
+			case 'aplha' :
+			default :
+				$orderBy = ' ORDER BY nom_formation';	
+		}
+		$query = "SELECT nom_formation, id_formation FROM formations WHERE id_formation != ".(int)$id." AND status = ".(int)$status.' '.$orderBy;
+		$result = self::$db->query($query);
+		$lignes = $result->fetchall(PDO::FETCH_ASSOC);
+		return $lignes;
+	}
+	
+/**
 * renvoie toutes les formations ayant un critre actif triŽes
 *
 * @param int $critere le critre pour lequel les formations doivent tre activess
@@ -104,7 +152,7 @@ class catalogue {
 				$orderBy = 'ORDER BY nom_formation';	
 		}
 		$critere = (int)$critere;
-		$query = "SELECT nom_formation, id_formation FROM formations, has_critere WHERE id_formation = formation_id AND critere_id = ".$critere." ".$orderBy;
+		$query = "SELECT nom_formation, id_formation FROM formations, has_critere WHERE id_formation = formation_id AND status = 2 AND  critere_id = ".$critere." ".$orderBy;
 		$result = self::$db->query($query);
 		$lignes = $result->fetchall(PDO::FETCH_ASSOC);
 		return $lignes;
@@ -184,7 +232,7 @@ class catalogue {
 	}
 	
 	
-	/**
+/**
 * mŽthode statique qui renvoie la liste des villes existantes en base
 *
 * @return array un tableau o chaque cellule 'id_ville' contient le nom de la ville
@@ -199,6 +247,29 @@ class catalogue {
 		}
 		return self::$villes;
 	}
+	
+
+/**
+* mŽthode statique qui crŽŽ une nouvelle ville
+*
+* @param $nomVille le nom de la nouvelle ville
+* @return l'id de la nouvelle ville
+*/	
+	
+	static public function addVille($nomVille) {
+		$liste = self::getVilles();
+		if (!in_array($nomVille,$liste)) {
+			$nomVille = ucfirst($nomVille);
+			$query = "INSERT INTO villes(nom_ville) VALUES (:nom)";
+			$stmt = self::$db->prepare($query);
+			$stmt->bindParam(':nom', $nomVille);
+			$stmt->execute();
+			self::$villes = NULL;
+			return self::$db->lastInsertId();
+		}
+		return false;			
+	}
+	
 	
 	
 	
