@@ -271,7 +271,40 @@ class catalogue {
 	}
 	
 	
+
+/**
+* mŽthode statique qui crŽŽ un nouveau critre
+*
+* @param $nomCritere ne nom du nouveau critre
+* @param $idFamille l'id de la famille auquel il doit appartenir
+* @return l'id du novueau critre
+*/	
+	
+	static public function addCritere($nomCritere, $idFamille) {
+		$familleCriteres = self::getAllFamillesCriteres();
+		if (!in_array($nomCritere,$familleCriteres[$idFamille]['criteres']) AND $nomCritere != ''){
+			$query = "INSERT INTO critere(nom_critere) VALUES (:nom_critere)";
+			$stmt = self::$db->prepare($query);
+			$stmt->bindParam(':nom_critere', $nomCritere);
+			$stmt->execute();
+			self::$famillesCriteres = NULL;
+			$newId = self::$db->lastInsertId();
+			$query = "INSERT INTO belongs_to(critere_id,famille_id) VALUES (".$newId.",".(int)$idFamille.')';
+			self::$db->exec($query);
+			return $newId;
+		}		
+	}	
 	
 	
+	
+/**
+* mŽthode statique qui supprime critre
+*
+* @param $idCritere
+*/
+	static public function delCritere($idCritere) {
+		$query = "DELETE FROM critere WHERE id_critere = ".(int)$idCritere;
+		self::$db->exec($query);
+	}
 	
 }
