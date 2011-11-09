@@ -149,7 +149,7 @@ class selection {
 		$result = self::$db->query($query);
 		$all =  $result->fetchall(PDO::FETCH_ASSOC);
 		foreach ($all as $cell=>$one) {
-			$query = "SELECT count(formation_id) as num FROM in_selection WHERE selection_id = ".$one['id_selection'];
+			$query = "SELECT count(formation_id) as num FROM in_selection,formations WHERE formation_id = id_formation AND status=2 AND selection_id = ".$one['id_selection'];
 			$result = self::$db->query($query);
 			$rows = $result->fetch();
 			$all[$cell]['num'] = $rows[0]['num'];

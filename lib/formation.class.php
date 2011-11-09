@@ -200,6 +200,7 @@ class formation {
 	
 	public function getCriteres() {
 		if ($this->criteres == NULL) {
+			$this->criteres = array();
 			$query = "SELECT critere_id FROM has_critere WHERE formation_id = ".$this->id;
 			$result = self::$db->query($query);
 			while ($ligne = $result->fetch(PDO::FETCH_ASSOC))
