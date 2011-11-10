@@ -46,10 +46,10 @@ class user {
 */	
 	
 	public function __construct($login='', $pass='') {		
-//		if (self::$db == NULL) {
+		if (self::$db == NULL) {
 			$db = new mypdo();
 			self::$db = $db;
-//		}
+		}
 		@session_start();
 		if (isset($_SESSION['user'])) {
 			$this->login = $_SESSION['user']->login;

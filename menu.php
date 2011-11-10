@@ -12,4 +12,5 @@
 <a href="list.php">formations</a> - 
 <a href="list_criteres.php">crit&egrave;res</a> - 
 <a href="list_selections.php">selections</a> -
+<a href="list_catalogues_pdf.php">catalogues PDF</a> -
 <a href="logout.php">d&eacute;connexion</a>

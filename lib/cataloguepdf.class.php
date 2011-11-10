@@ -20,7 +20,7 @@ class cataloguePdf {
 	public $idPdfCatalogue;
 	public $selectionId = 0;
 	public $selection;
-	private $fpdi;
+	public $fpdi;
 	private $couverture;
 	private $couverture34;
 	private $modeleFormation;
@@ -130,7 +130,17 @@ class cataloguePdf {
 		$this->selectionId = $idSelection;
 	}	
 	
+/**
+* retourne la selection associée au catalogue pdf 
+*
+* @return $array la selection
+*/	
 	
+	public function getSelection() {
+		return ($this->selection);
+	}	
+	
+		
 	
 	
 	
@@ -150,7 +160,21 @@ class cataloguePdf {
 		return FALSE;
 		
 	}
+	
+	
+	
+/**
+* retourne la couverture associée au catalogue pdf 
+*
+* @return $array la couverture
+*/	
+	
+	public function getCouverture12() {
+		return ($this->couverture);
+	}	
 
+	
+	
 /**
 * permet de définir les 3eme et 4eme de couverture
 * l'element fourni peut avoir une ou deux pages. Si il n'en a qu'une, la dernière page insérée en 'after' devient la
@@ -169,6 +193,17 @@ class cataloguePdf {
 		
 	}
 	
+
+/**
+* retourne la 3eme et 4eme de couverture associée au catalogue pdf 
+*
+* @return $array la 3eme et 4eme de couverture
+*/	
+	
+	public function getCouverture34() {
+		return ($this->couverture34);
+	}		
+	
 	
 /**
 * permet de définir un modèle à utiliser pour les pages de formations
@@ -184,6 +219,17 @@ class cataloguePdf {
 		}
 		return FALSE;
 	}
+
+	
+/**
+* retourne le modele de formation associée au catalogue pdf 
+*
+* @return $array le modele
+*/	
+	
+	public function getModeleFormation() {
+		return ($this->modeleFormation);
+	}		
 	
 	
 /**
@@ -201,6 +247,17 @@ class cataloguePdf {
 		return FALSE;
 	}
 	
+	
+/**
+* retourne le modèle de sommaire associée au catalogue pdf 
+*
+* @return $array le modele
+*/	
+	
+	public function getModeleSommaire() {
+		return ($this->modeleSommaire);
+	}		
+	
 /**
 * permet de définir le titre à afficher sur la couverture
 *
@@ -214,8 +271,42 @@ class cataloguePdf {
 			$this->titre = $titre;
 		}
 	}
-	
 
+	
+/**
+* retourne le titre associée au catalogue pdf 
+*
+* @return $string le titre
+*/	
+	
+	public function getTitre() {
+		return ($this->titre);
+	}		
+
+	
+/**
+* retourne les pages de début de catalogue
+*
+* @return $array la liste des pages
+*/	
+	
+	public function getElementsBefore() {
+		return ($this->elementsBefore);
+	}		
+	
+	
+/**
+* retourne les pages de fin de catalogue
+*
+* @return $array la liste des pages
+*/	
+	
+	public function getElementsAfter() {
+		return ($this->elementsAfter);
+	}		
+
+	
+	
 /**
 * permet de générer la page PDF d'une formation.
 * 
