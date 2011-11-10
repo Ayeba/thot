@@ -1,7 +1,7 @@
 <?php
 
 /** 
- * Fichier contenant la classe selectionPdf
+ * Fichier contenant la classe cataloguePdf
  * 
  * 
  * @package lib 
@@ -10,15 +10,15 @@
 
 
 /** 
- * La classe selectionPdf permet de générer l'export d'une selection de formations au format PDF
+ * La classe cataloguePdf permet de générer l'export d'une selection de formations au format PDF
  * @package lib 
  * @author Romain BOURDON <romain@ayeba.fr> 
  */
  
-class selectionPdf {
+class cataloguePdf {
 	
 	public $idPdfCatalogue;
-	public $selectionId;
+	public $selectionId = 0;
 	public $selection;
 	private $fpdi;
 	private $couverture;
@@ -28,7 +28,6 @@ class selectionPdf {
 	private $elementsBefore = array();
 	private $elementsAfter = array();
 	private $titre = '';
-	private $titreXY = array('x'=>0,'y'=>0);
 	public $dateMod = '';
 	public $commentaire = '';
 	public $nomCatalogue = '';
@@ -41,7 +40,6 @@ class selectionPdf {
 			$db = new mypdo();
 			self::$db = $db;
 		}	
-		$this->fpdi = new myfpdi();
 		
 		if ($idCataloguePdf != 0) {
 			$query = "SELECT * FROM pdf_catalogue WHERE id_pdf_catalogue = ".(int)$idCataloguePdf;
@@ -50,7 +48,7 @@ class selectionPdf {
 				$this->idPdfCatalogue = $idCataloguePdf;
 				
 				$this->setSelection($catalogue['selection_id']);
-				$this->setTitre($catalogue['titre'],$catalogue['titre_x'],$catalogue['titre_y']);
+				$this->setTitre($catalogue['titre']);
 				$this->setCouverture12($catalogue['couverture']);
 				$this->setCouverture34($catalogue['couverture34']);
 				$this->elementsBefore = unserialize($catalogue['elements_before']);
@@ -62,8 +60,14 @@ class selectionPdf {
 				$this->nomCatalogue = $catalogue['nom_pdf_catalogue'];
 				
 			}
+
 		}
-		
+		else {
+			$this->couverture['id_element'] = 0;
+			$this->couverture34['id_element'] = 0;
+			$this->modeleFormation['id_element'] = 0;
+			$this->modeleSommaire['id_element'] = 0;
+		}
 	}
 
 	
@@ -74,11 +78,11 @@ class selectionPdf {
 	
 	public function save() {
 		if ($this->idPdfCatalogue == 0) {
-			$query = "INSERT INTO pdf_catalogue(nom_pdf_catalogue,selection_id,couverture,couverture34,modele_formation,modele_sommaire,elements_before,elements_after,titre,titre_x,titre_y,commentaire,datemod)
-						VALUES (:nom_pdf_catalogue,:selection_id,:couverture,:couverture34,:modele_formation,:modele_sommaire,:elements_before,:elements_after,:titre,:titre_x,:titre_y,:commentaire,NOW())";
+			$query = "INSERT INTO pdf_catalogue(nom_pdf_catalogue,selection_id,couverture,couverture34,modele_formation,modele_sommaire,elements_before,elements_after,titre,commentaire,datemod)
+						VALUES (:nom_pdf_catalogue,:selection_id,:couverture,:couverture34,:modele_formation,:modele_sommaire,:elements_before,:elements_after,:titre,:commentaire,NOW())";
 		}
 		else {
-			$query = "UPDATE pdf_catalogue SET nom_pdf_catalogue = :nom_pdf_catalogue, selection_id = :selection_id, couverture = :couverture, couverture34 = :couverture34, modele_formation = :modele_formation, modele_sommaire = :modele_sommaire, elements_before = :elements_before, elements_after = :elements_after, titre = :titre, titre_x = :titre_x, titre_y = :titre_y, commentaire = :commentaire, datemod = NOW() WHERE id_pdf_catalogue = ".$this->idPdfCatalogue;
+			$query = "UPDATE pdf_catalogue SET nom_pdf_catalogue = :nom_pdf_catalogue, selection_id = :selection_id, couverture = :couverture, couverture34 = :couverture34, modele_formation = :modele_formation, modele_sommaire = :modele_sommaire, elements_before = :elements_before, elements_after = :elements_after, titre = :titre, commentaire = :commentaire, datemod = NOW() WHERE id_pdf_catalogue = ".$this->idPdfCatalogue;
 		}
 		
 		$stmt = self::$db->prepare($query);
@@ -93,8 +97,6 @@ class selectionPdf {
 		$elementsAfter = serialize($this->elementsAfter);
 		$stmt->bindParam(':elements_after', $elementsAfter);
 		$stmt->bindParam(':titre', $this->titre);
-		$stmt->bindParam(':titre_x', $this->titreXY['x']);
-		$stmt->bindParam(':titre_y', $this->titreXY['y']);
 		$stmt->bindParam(':commentaire', $this->commentaire);
 		$stmt->execute();
 		if ($this->idPdfCatalogue == 0) {
@@ -104,7 +106,16 @@ class selectionPdf {
 		
 	}
 	
+/**
+* permet de détruire le catalogue en db et l'objet courant
+*
+*/		
 	
+	public function delete() {
+		$query = "DELETE FROM pdf_catalogue WHERE id_pdf_catalogue = ".$this->idPdfCatalogue;
+		self::$db->exec($query);
+		unset($this);
+	}
 	
 	
 /**
@@ -198,13 +209,9 @@ class selectionPdf {
 * @param int $y sa position y dans la page
 */		
 	
-	public function SetTitre($titre,$x = 0,$y = 0) {
+	public function SetTitre($titre) {
 		if ($titre != '') {
 			$this->titre = $titre;
-			if ($x != 0)
-				$this->titreXY['x'] = $x;
-			if ($y != 0)
-				$this->titreXY['y'] = $y;
 		}
 	}
 	
@@ -371,7 +378,7 @@ class selectionPdf {
 */	
 		
 	public function getElementInfos($idElement) {
-		$query = "SELECT id_element,nom_element,commentaire,texte_sommaire,fichier_element,nb_pages,pdf_categorie_id FROM pdf_elements WHERE id_element = ".(int)$idElement;
+		$query = "SELECT id_element,nom_element,commentaire,texte_sommaire,fichier_element,nb_pages,pdf_categorie_id, titre_x, titre_y FROM pdf_elements WHERE id_element = ".(int)$idElement;
 		$result = self::$db->query($query);
 		if ($ligne = $result->fetch(PDO::FETCH_ASSOC)) {
 			if (is_file('media/tpl_pdf/'.$ligne['fichier_element'])) {
@@ -493,6 +500,7 @@ class selectionPdf {
 */	
 	
 	public function output() {
+		$this->fpdi = new myfpdi();
 		$this->fpdi->AliasNbPages();
 		//couverture12
 		$this->fpdi->addPageNum = 0;
@@ -505,7 +513,7 @@ class selectionPdf {
 						$this->fpdi->useTemplate($tplidx);
 						if ($i == 1) {
 							$this->fpdi->SetFont('Arial','B',16);
-							$this->fpdi->SetXY($this->titreXY['x'],$this->titreXY['y']);
+							$this->fpdi->SetXY($this->couverture['titre_x'],$this->couverture['titre_y']);
 							$this->fpdi->multiCell(500,20,$this->titre,0);
 						}
 					}
@@ -566,4 +574,15 @@ class selectionPdf {
 		
 		$this->fpdi->Output();
 	}	
+	
+/**
+ * méthode statique qui permet de récuperer l'ensemble des catalogues PDF existants en db
+ * 
+ */	
+
+	static public function getCatalogues() {
+		$query = "SELECT id_pdf_catalogue, nom_pdf_catalogue, datemod, commentaire FROM pdf_catalogue ORDER BY nom_pdf_catalogue";
+		$result = self::$db->query($query); 
+		return $result->fetchAll(PDO::FETCH_ASSOC);
+	}
 }
