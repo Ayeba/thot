@@ -17,33 +17,112 @@
  
 class selectionPdf {
 	
+	public $idPdfCatalogue;
+	public $selectionId;
 	public $selection;
-	public $fpdi;
-	public $couverture;
-	public $couverture34;
-	public $modeleFormation;
-	public $modeleSommaire;
-	public $elementsBefore = array();
-	public $elementsAfter = array();
-	public $titre = '';
-	public $titreXY = array('x'=>0,'y'=>0);
+	private $fpdi;
+	private $couverture;
+	private $couverture34;
+	private $modeleFormation;
+	private $modeleSommaire;
+	private $elementsBefore = array();
+	private $elementsAfter = array();
+	private $titre = '';
+	private $titreXY = array('x'=>0,'y'=>0);
+	public $dateMod = '';
+	public $commentaire = '';
+	public $nomCatalogue = '';
 	
 	static $db;
 	
-	public function __construct($idSelection = 0) {
+	public function __construct($idCataloguePdf = 0) {
 		
 		if (self::$db == NULL) {
 			$db = new mypdo();
 			self::$db = $db;
+		}	
+		$this->fpdi = new myfpdi();
+		
+		if ($idCataloguePdf != 0) {
+			$query = "SELECT * FROM pdf_catalogue WHERE id_pdf_catalogue = ".(int)$idCataloguePdf;
+			$result = self::$db->query($query);
+			if ($catalogue = $result->fetch(PDO::FETCH_ASSOC)) {
+				$this->idPdfCatalogue = $idCataloguePdf;
+				
+				$this->setSelection($catalogue['selection_id']);
+				$this->setTitre($catalogue['titre'],$catalogue['titre_x'],$catalogue['titre_y']);
+				$this->setCouverture12($catalogue['couverture']);
+				$this->setCouverture34($catalogue['couverture34']);
+				$this->elementsBefore = unserialize($catalogue['elements_before']);
+				$this->elementsAfter = unserialize($catalogue['elements_after']);
+				$this->setModeleFormation($catalogue['modele_formation']);
+				$this->setModeleSommaire($catalogue['modele_sommaire']);
+				$this->dateMod = $catalogue['datemod'];
+				$this->commentaire = $catalogue['commentaire'];
+				$this->nomCatalogue = $catalogue['nom_pdf_catalogue'];
+				
+			}
 		}
 		
-		if ($idSelection != 0) {
-			selection::$db = self::$db;
-			$this->selection = new selection($idSelection);
-		}		
-		$this->fpdi = new myfpdi();
 	}
 
+	
+/**
+* permet de sauvegarder le catalogue en db
+*
+*/		
+	
+	public function save() {
+		if ($this->idPdfCatalogue == 0) {
+			$query = "INSERT INTO pdf_catalogue(nom_pdf_catalogue,selection_id,couverture,couverture34,modele_formation,modele_sommaire,elements_before,elements_after,titre,titre_x,titre_y,commentaire,datemod)
+						VALUES (:nom_pdf_catalogue,:selection_id,:couverture,:couverture34,:modele_formation,:modele_sommaire,:elements_before,:elements_after,:titre,:titre_x,:titre_y,:commentaire,NOW())";
+		}
+		else {
+			$query = "UPDATE pdf_catalogue SET nom_pdf_catalogue = :nom_pdf_catalogue, selection_id = :selection_id, couverture = :couverture, couverture34 = :couverture34, modele_formation = :modele_formation, modele_sommaire = :modele_sommaire, elements_before = :elements_before, elements_after = :elements_after, titre = :titre, titre_x = :titre_x, titre_y = :titre_y, commentaire = :commentaire, datemod = NOW() WHERE id_pdf_catalogue = ".$this->idPdfCatalogue;
+		}
+		
+		$stmt = self::$db->prepare($query);
+		$stmt->bindParam(':nom_pdf_catalogue', $this->nomCatalogue);
+		$stmt->bindParam(':selection_id', $this->selectionId);
+		$stmt->bindParam(':couverture', $this->couverture['id_element']);
+		$stmt->bindParam(':couverture34', $this->couverture34['id_element']);
+		$stmt->bindParam(':modele_formation', $this->modeleFormation['id_element']);
+		$stmt->bindParam(':modele_sommaire', $this->modeleSommaire['id_element']);
+		$elementsBefore = serialize($this->elementsBefore);
+		$stmt->bindParam(':elements_before', $elementsBefore);
+		$elementsAfter = serialize($this->elementsAfter);
+		$stmt->bindParam(':elements_after', $elementsAfter);
+		$stmt->bindParam(':titre', $this->titre);
+		$stmt->bindParam(':titre_x', $this->titreXY['x']);
+		$stmt->bindParam(':titre_y', $this->titreXY['y']);
+		$stmt->bindParam(':commentaire', $this->commentaire);
+		$stmt->execute();
+		if ($this->idPdfCatalogue == 0) {
+			$id = self::$db->lastInsertId();
+			$this->idPdfCatalogue = $id;
+		}
+		
+	}
+	
+	
+	
+	
+/**
+* permet de choisir ou changer la selection associée au catalogue pdf 
+*
+* @param int $idSelection l'id de la selection
+*/	
+	
+	public function setSelection($idSelection) {
+		selection::$db = self::$db;
+		$this->selection = new selection($idSelection);
+		$this->selectionId = $idSelection;
+	}	
+	
+	
+	
+	
+	
 /**
 * permet de définir les 1ere et 2eme de couverture 
 * L'element fourni peut avoir une ou deux pages. Si iln'y en a qu'une, un page blanche est insérée en deuxième de couverture
@@ -137,6 +216,8 @@ class selectionPdf {
 */		
 	
 	public function addPageFormation($formationFromSelection) {
+		$border = 0;
+		
 		if ($formationFromSelection != NULL) {
 			$this->fpdi->AddPage();
 			if (isset($this->modeleFormation['fichier_element'])) {
@@ -147,8 +228,8 @@ class selectionPdf {
 			
 			$formation = new formation($formationFromSelection);	
 			$criteres = $formation->getCriteres();
+			$dates = $formation->getDates();
 			$famillesCriteres = catalogue::getAllFamillesCriteres();		
-			$border = 0;
 			
 			
 			//image
@@ -214,6 +295,29 @@ class selectionPdf {
 			$this->fpdi->Cell(50,5,'intra : ',$border,0);
 			$this->fpdi->SetFont('Arial','',10);
 			$this->fpdi->Cell(100,5,'nous consulter',$border,2);
+			
+			
+			if (sizeof($dates) > 0) {
+				$this->fpdi->setx(120);
+				$this->fpdi->SetFont('Arial','B',10);
+				$this->fpdi->Cell(50,5,'Dates inter ',$border,2);
+				
+				$ville_id = '';
+				$done = 0; 
+				//setlocale(LC_TIME, "fr_FR");
+				foreach ($dates as $date) {
+					if ($ville_id != $date['ville_id']) {
+						$ville_id = $date['ville_id'];
+						$this->fpdi->setx(120);
+						$this->fpdi->Cell(50,5,'     '.$date['nom_ville'],$border,0);
+					}
+					$timeStamp = strtotime($date['date']);
+					$this->fpdi->Cell(100,5,strftime("%d/%m/%Y",$timeStamp),$border,2);
+				}
+					
+			}
+				
+			
 			$this->fpdi->setY($actualY);
 			//
 			//fin du bloc à droite
@@ -267,7 +371,7 @@ class selectionPdf {
 */	
 		
 	public function getElementInfos($idElement) {
-		$query = "SELECT nom_element,commentaire,texte_sommaire,fichier_element,nb_pages,pdf_categorie_id FROM pdf_elements WHERE id_element = ".(int)$idElement;
+		$query = "SELECT id_element,nom_element,commentaire,texte_sommaire,fichier_element,nb_pages,pdf_categorie_id FROM pdf_elements WHERE id_element = ".(int)$idElement;
 		$result = self::$db->query($query);
 		if ($ligne = $result->fetch(PDO::FETCH_ASSOC)) {
 			if (is_file('media/tpl_pdf/'.$ligne['fichier_element'])) {
@@ -458,6 +562,7 @@ class selectionPdf {
 					}
 			}
 		}
+		
 		
 		$this->fpdi->Output();
 	}	
